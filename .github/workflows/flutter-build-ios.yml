@@ -1,7 +1,7 @@
 name: Flutter Build iOS
 
 on:
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch:
 
 jobs:
   build:
@@ -21,6 +21,9 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
+      - name: Install CocoaPods dependencies
+        run: cd ios && pod install --repo-update --verbose
+
       - name: Run Flutter Doctor
         run: flutter doctor -v
 
@@ -32,15 +35,14 @@ jobs:
 
       - name: Configure Fastlane Environment
         env:
-          FASTLANE_USER: ${{secrets.FASTLANE_USER}} # 在 GitHub Secrets 中设置你的 Apple ID
-          FASTLANE_PASSWORD: ${{secrets.FASTLANE_PASSWORD}} # 在 GitHub Secrets 中设置你的 Apple ID 密码或应用专用密码
+          MATCH_PASSWORD: ${{secrets.MATCH_PASSWORD}}
+          FASTLANE_USER: ${{secrets.FASTLANE_USER}}
+          FASTLANE_PASSWORD: ${{secrets.FASTLANE_PASSWORD}}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{secrets.MATCH_GIT_BASIC_AUTHORIZATION}}
         run: |
           cd ios
-          fastlane gym \
-            --scheme Runner \
-            --export_method development \ # 或者使用 'development' 根据你的 Provisioning Profile 类型选择
-            --output_directory ../build/ios \
-            --clean
+          fastlane match development --readonly
+          fastlane build_app
 
       - name: Package artifact
         run: |
@@ -52,3 +54,9 @@ jobs:
         with:
           name: flutter-ios-app-for-device-testing
           path: build/ios/Runner-app.zip
+          
+      - name: Upload Fastlane Logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: fastlane-logs
+          path: /Users/runner/Library/Logs/gym/
