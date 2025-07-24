@@ -1,0 +1,41 @@
+name: Flutter Build Android
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build Flutter Android App
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.4'  # 可选，可以使用 'stable'、'dev' 或指定版本
+          channel: stable
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Run Flutter Doctor
+        run: flutter doctor -v
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      # 或者构建 App Bundle（推荐）
+      # - name: Build App Bundle
+      #   run: flutter build appbundle --release
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: flutter-android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
