@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     runs-on: macos-latest
-    name: Build Flutter iOS App for Device Testing
+    name: Build Flutter iOS App
 
     steps:
       - name: Checkout code
@@ -32,13 +32,13 @@ jobs:
 
       - name: Configure Fastlane Environment
         env:
-          FASTLANE_USER: ${{ secrets.FASTLANE_USER }} # 在 GitHub Secrets 中设置你的 Apple ID
-          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }} # 在 GitHub Secrets 中设置你的 Apple ID 密码或应用专用密码
+          FASTLANE_USER: ${{secrets.FASTLANE_USER}} # 在 GitHub Secrets 中设置你的 Apple ID
+          FASTLANE_PASSWORD: ${{secrets.FASTLANE_PASSWORD}} # 在 GitHub Secrets 中设置你的 Apple ID 密码或应用专用密码
         run: |
           cd ios
           fastlane gym \
             --scheme Runner \
-            --export_method ad-hoc \ # 或者使用 'development' 根据你的 Provisioning Profile 类型选择
+            --export_method development \ # 或者使用 'development' 根据你的 Provisioning Profile 类型选择
             --output_directory ../build/ios \
             --clean
 
