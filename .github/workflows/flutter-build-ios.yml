@@ -1,4 +1,4 @@
-name: Flutter Build iOS for Device Testing
+name: Flutter Build iOS
 
 on:
   workflow_dispatch: # 允许手动触发
