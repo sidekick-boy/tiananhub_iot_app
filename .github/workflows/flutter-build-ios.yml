@@ -1,4 +1,4 @@
-name: Flutter Build iOS
+name: Flutter Build iOS for Device Testing
 
 on:
   workflow_dispatch: # 允许手动触发
@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     runs-on: macos-latest
-    name: Build Flutter iOS App
+    name: Build Flutter iOS App for Device Testing
 
     steps:
       - name: Checkout code
@@ -27,14 +27,20 @@ jobs:
       - name: Install Fastlane
         run: sudo gem install fastlane -N
 
-      - name: Build iOS App (Release)
+      - name: Build iOS App (Release) with Flutter
         run: flutter build ios --release --no-codesign
 
-      - name: Archive and Export iOS App
+      - name: Configure Fastlane Environment
+        env:
+          FASTLANE_USER: ${{ secrets.FASTLANE_USER }} # 在 GitHub Secrets 中设置你的 Apple ID
+          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }} # 在 GitHub Secrets 中设置你的 Apple ID 密码或应用专用密码
         run: |
           cd ios
-          fastlane snapshot init || true # 初始化（如果没用 fastlane）
-          fastlane gym --scheme Runner --export_method development --output_directory ../build/ios --clean
+          fastlane gym \
+            --scheme Runner \
+            --export_method ad-hoc \ # 或者使用 'development' 根据你的 Provisioning Profile 类型选择
+            --output_directory ../build/ios \
+            --clean
 
       - name: Package artifact
         run: |
@@ -44,5 +50,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: flutter-ios-app
+          name: flutter-ios-app-for-device-testing
           path: build/ios/Runner-app.zip
