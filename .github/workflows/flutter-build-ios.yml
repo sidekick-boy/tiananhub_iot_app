@@ -29,10 +29,7 @@ jobs:
 
       - name: Install Fastlane
         run: sudo gem install fastlane -N
-
-      - name: Build iOS App (Release) with Flutter
-        run: flutter build ios --release --no-codesign
-
+        
       - name: Configure Fastlane Environment
         env:
           MATCH_PASSWORD: ${{secrets.MATCH_PASSWORD}}
