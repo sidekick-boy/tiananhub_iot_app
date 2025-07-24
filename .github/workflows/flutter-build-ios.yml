@@ -41,7 +41,6 @@ jobs:
           MATCH_GIT_BASIC_AUTHORIZATION: ${{secrets.MATCH_GIT_BASIC_AUTHORIZATION}}
         run: |
           cd ios
-          fastlane match development --readonly
           fastlane build_app
 
       - name: Package artifact
