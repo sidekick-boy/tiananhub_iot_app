@@ -48,26 +48,18 @@ class SelectRegionScreen extends TbContextStatelessWidget {
                         ),
                         child: Text(S.of(context).northAmerica),
                       ),
-                    )
-                    // ,
-                    // const SizedBox(height: 10),
-                    // SizedBox(
-                    //   width: double.infinity,
-                    //   child: ElevatedButton(
-                    //     onPressed: () {
-                    //       getIt<IEndpointService>().setRegion(Region.europe);
-                    //       navigateTo('/');
-                    //     },
-                    //     style: ElevatedButton.styleFrom(
-                    //       padding: const EdgeInsets.symmetric(
-                    //         horizontal: 16,
-                    //         vertical: 8,
-                    //       ),
-                    //       textStyle: TbTextStyles.labelMedium,
-                    //     ),
-                    //     child: Text(S.of(context).europe),
-                    //   ),
-                    // ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          getIt<IEndpointService>().setRegion(Region.europe);
+                          navigateTo('/');
+                        },
+                        child: Text(S.of(context).europe),
+                      ),
+                    ),
                   ],
                 ),
               ),

@@ -1,5 +1,5 @@
 abstract class ThingsboardAppConstants {
-  static const thingsBoardApiEndpoint = 'https://iotdev.tiananhub.com';
+  static const thingsBoardApiEndpoint = 'https://iot.tiananhub.com';
   static const thingsboardOAuth2CallbackUrlScheme =
       'org.thingsboard.pe.app.auth';
 

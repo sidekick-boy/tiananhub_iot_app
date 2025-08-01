@@ -7,8 +7,8 @@ import 'package:thingsboard_app/utils/services/local_database/i_local_database_s
 class EndpointService implements IEndpointService {
   EndpointService({required this.databaseService});
 
-  static const northAmericaHost = 'https://iotdev.tiananhub.com';
-  static const europeHost = 'https://iotdev.tiananhub.com';
+  static const northAmericaHost = 'https://iot.tiananhub.com';
+  static const europeHost = 'https://iot.tiananhub.com';
 
   final ILocalDatabaseService databaseService;
   String? _cachedEndpoint;
