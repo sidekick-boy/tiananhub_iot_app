@@ -21,8 +21,11 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
-      - name: Install CocoaPods dependencies
-        run: cd ios && pod install --repo-update --verbose
+      - name: Setup CocoaPods
+        run: |
+          cd ios
+          pod setup --verbose
+          pod install --repo-update
 
       - name: Run Flutter Doctor
         run: flutter doctor -v
@@ -30,23 +33,26 @@ jobs:
       - name: Install Fastlane
         run: sudo gem install fastlane -N
         
-      - name: Configure Fastlane Environment
+      - name: Build iOS App with Fastlane
         env:
-          MATCH_PASSWORD: ${{secrets.MATCH_PASSWORD}}
-          FASTLANE_USER: ${{secrets.FASTLANE_USER}}
-          FASTLANE_PASSWORD: ${{secrets.FASTLANE_PASSWORD}}
-          MATCH_GIT_BASIC_AUTHORIZATION: ${{secrets.MATCH_GIT_BASIC_AUTHORIZATION}}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+          DELIVER_ITMSTRANSPORTER_ADDITIONAL_UPLOAD_PARAMETERS: "-t DAV"
         run: |
           cd ios
-          fastlane build_app
+          fastlane build_app \
+            --scheme Runner \
+            --configuration Release \
+            --export_method ad-hoc \                    # 分发方式：ad-hoc / app-store / development
+            --export_options ./export_options.plist \   # 导出配置文件
+            --output_name Runner.ipa \
+            --verbose
 
-      - name: Package artifact
-        run: |
-          cd build/ios
-          zip -r Runner-app.zip Runner.app
-
-      - name: Upload Artifact
+      - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: flutter-ios-app-for-device-testing
-          path: build/ios/Runner-app.zip
+          name: flutter-ios-app.ipa
+          path: ios/Runner.ipa
+          if: success()
